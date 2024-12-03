@@ -17,9 +17,9 @@ app.use(
 		saveUninitialized: true,
 	})
 );
-
+app.use(express.static('public'));
 app.get('/', (req, res) => {
-	res.send('Hello, this is a somewhat smarter chatbot server!');
+	res.sendFile(__dirname + '/public/index.html');
 });
 
 app.post('/chat', async (req, res) => {
