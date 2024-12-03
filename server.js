@@ -3,6 +3,8 @@ const session = require('express-session');
 const bodyParser = require('body-parser');
 const getBotResponse = require('./bot');
 
+require('dotenv').config();
+
 const app = express();
 const PORT = 3000;
 
@@ -20,7 +22,7 @@ app.get('/', (req, res) => {
 	res.send('Hello, this is a somewhat smarter chatbot server!');
 });
 
-app.post('/chat', (req, res) => {
+app.post('/chat', async (req, res) => {
 	const userMessage = req.body.message;
 	// check if the user has a history
 	if (!req.session.history) {
@@ -30,7 +32,9 @@ app.post('/chat', (req, res) => {
 	// add the user message to the history
 	req.session.history.push(userMessage);
 
-	const botReply = getBotResponse(userMessage);
+	const botReply = await getBotResponse(userMessage);
+	console.log(botReply);
+
 	res.json({
 		reply: botReply,
 		history: req.session.history,
