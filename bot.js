@@ -5,7 +5,7 @@ const responses = {
 	farewell: 'Goodbye! Feel free to reach out anytime.',
 };
 
-const classifier = natural.BayesClassifier();
+const classifier = new natural.BayesClassifier();
 
 // training the bot
 classifier.addDocument('hello', 'greet');

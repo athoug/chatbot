@@ -1,20 +1,40 @@
 const express = require('express');
+const session = require('express-session');
 const bodyParser = require('body-parser');
 const getBotResponse = require('./bot');
 
 const app = express();
 const PORT = 3000;
 
+// middleware
 app.use(bodyParser.json());
+app.use(
+	session({
+		secret: 'cool-cat',
+		resave: false,
+		saveUninitialized: true,
+	})
+);
 
 app.get('/', (req, res) => {
-	res.send('Hello, this is a simple chatbot server!');
+	res.send('Hello, this is a somewhat smarter chatbot server!');
 });
 
 app.post('/chat', (req, res) => {
 	const userMessage = req.body.message;
+	// check if the user has a history
+	if (!req.session.history) {
+		// if not assign it an empty array
+		req.session.history = [];
+	}
+	// add the user message to the history
+	req.session.history.push(userMessage);
+
 	const botReply = getBotResponse(userMessage);
-	res.json({ reply: botReply });
+	res.json({
+		reply: botReply,
+		history: req.session.history,
+	});
 });
 
 app.listen(PORT, () => {
